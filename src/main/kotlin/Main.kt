@@ -1,10 +1,11 @@
 import dto.Billionaire
 import org.apache.commons.csv.CSVFormat
 import org.apache.commons.csv.CSVParser
-import repository.billionaireRepository
+import services.billionaireServices
 import java.io.File
 
 fun main() {
+
     val file = File("src/main/resources/Billionaire.csv").bufferedReader()
     val csvParser = CSVParser(
         file, CSVFormat.DEFAULT.withFirstRecordAsHeader()
@@ -12,11 +13,11 @@ fun main() {
             .withTrim()
     );
 
-    var id: Long = 0
+
+    val bR = billionaireServices()
     for (csvRecord in csvParser) {
-        billionaireRepository().addBillionaire(
+        bR.addBillionaire(
             Billionaire(
-                id = id++,
                 name = csvRecord[0],
                 netWorth = csvRecord[1],
                 country = csvRecord[2],
@@ -27,4 +28,11 @@ fun main() {
             )
         );
     }
+
+
+    bR.printBestBillionaire(50)
+    bR.printGroupByCountry()
+    bR.printCountBillionaireByIndustries(50)
+    bR.printGroupByIndustries()
+
 }

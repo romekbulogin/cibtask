@@ -1,27 +1,74 @@
 package services
 
-import repository.billionaireRepository
+import dto.Billionaire
+import java.util.SortedMap
 
 class billionaireServices {
+    private val billionaireList = ArrayList<Billionaire>()
 
-    private var billionaireRepository: billionaireRepository? = null;
-    constructor() {
-        billionaireRepository = billionaireRepository()
+    fun addBillionaire(billionaire: Billionaire) {
+        billionaireList.add(billionaire)
     }
 
-    fun getBillionaire(id: Long) {
-        //TODO (get Billionaire object)
+    private fun sortingByCountry() = billionaireList.groupBy { it.country }
+
+    private fun groupByIndustries() = billionaireList.groupBy { it.industry }
+    private fun countryWithManyBillionaire(): SortedMap<Int, String> {
+        var sortByCountry = sortingByCountry()
+        val bestBillionaire = HashMap<Int, String>();
+
+        for (country in sortByCountry.keys) {
+            if (country != null) {
+                bestBillionaire[sortByCountry[country]?.size!!] = country
+            }
+        }
+        return bestBillionaire.toSortedMap()
     }
 
-    fun sortingByCountry() {
-        //TODO (sorting billionaire by country)
+    private fun industriesWithManyBillionaire(): SortedMap<Int, String> {
+        val industries = billionaireList.groupBy { it.industry }
+        val bestBillionaire = HashMap<Int, String>();
+
+        for(i in industries.keys) {
+            if(i != null){
+                bestBillionaire[industries[i]?.size!!] = i
+            }
+        }
+        return bestBillionaire.toSortedMap()
     }
 
-    fun countryWithManyBillionaire() {
-        //TODO (find country with many billionaire)
+    fun printGroupByCountry() {
+        var sortByCountry = sortingByCountry()
+        for (country in sortByCountry.keys) {
+            println("===${country}===")
+            for (i in sortByCountry[country]!!) {
+                println(i)
+            }
+        }
     }
 
-    fun industriesWithManyBillionaire() {
-        //TODO (find industries with many billionaire)
+    fun printBestBillionaire(count: Int) {
+        for (i in countryWithManyBillionaire()) {
+            if (i.key > count) {
+                println(i)
+            }
+        }
+    }
+
+    fun printGroupByIndustries(){
+        var sortByIndustries = groupByIndustries()
+        for (industries in sortByIndustries.keys) {
+            println("===${industries}===")
+            for (i in sortByIndustries[industries]!!) {
+                println(i)
+            }
+        }
+    }
+    fun printCountBillionaireByIndustries(count: Int) {
+        for (i in industriesWithManyBillionaire()) {
+            if (i.key > count) {
+                println(i)
+            }
+        }
     }
 }
